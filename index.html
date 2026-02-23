@@ -3,15 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#15803d">
     <title>Green Street Hideaway - Digital Guide</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        /* Fixed Accordion CSS */
         .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.5s ease-in-out; }
         .accordion-open .accordion-content { max-height: 2000px; }
-        .fa-chevron-down { transition: transform 0.3s ease; }
-        #keypadImg { transition: opacity 0.2s ease; }
     </style>
 </head>
 <body id="top" class="bg-gray-50 text-gray-800 font-sans leading-relaxed">
@@ -24,30 +22,36 @@
 
     <main class="max-w-md mx-auto p-4 space-y-6 pb-24 mt-2">
 
-        <section class="grid grid-cols-3 gap-3">
+        <section class="grid grid-cols-2 gap-3">
             <a href="https://www.google.com/maps/search/?api=1&query=46.254917,15.114056" target="_blank" rel="noopener noreferrer" class="bg-white p-3 rounded-xl shadow-sm border border-gray-100 text-center flex flex-col justify-center items-center">
                 <i class="fas fa-map-marker-alt text-green-600 text-xl mb-1"></i>
-                <span class="block text-xs font-semibold">Maps</span>
+                <span class="block text-xs font-semibold">Open Maps</span>
             </a>
-            <a href="https://wa.me/38631616002" class="bg-white p-3 rounded-xl shadow-sm border border-gray-100 text-center flex flex-col justify-center items-center">
-                <i class="fab fa-whatsapp text-green-500 text-xl mb-1"></i>
-                <span class="block text-xs font-semibold">Message</span>
-            </a>
-            <button onclick="document.getElementById('qrModal').classList.remove('hidden')" class="bg-white p-3 rounded-xl shadow-sm border border-gray-100 text-center flex flex-col justify-center items-center">
-                <i class="fas fa-qrcode text-gray-700 text-xl mb-1"></i>
-                <span class="block text-xs font-semibold">Check-In</span>
+            <button onclick="document.getElementById('checkinModal').classList.remove('hidden')" class="bg-white p-3 rounded-xl shadow-sm border border-gray-100 text-center flex flex-col justify-center items-center relative overflow-hidden">
+                <div class="absolute inset-0 bg-green-50 opacity-50"></div>
+                <i class="fas fa-clipboard-check text-green-700 text-xl mb-1 relative z-10"></i>
+                <span class="block text-xs font-bold text-green-800 relative z-10">Check-In</span>
             </button>
         </section>
 
-        <div id="qrModal" class="hidden fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4" onclick="this.classList.add('hidden')">
-            <div class="bg-white p-6 rounded-2xl max-w-sm w-full text-center relative" onclick="event.stopPropagation()">
-                <button onclick="document.getElementById('qrModal').classList.add('hidden')" class="absolute top-2 right-4 text-gray-500 font-bold text-xl">&times;</button>
-                <h3 class="font-bold text-lg mb-4">Scan to Check-In</h3>
-                <img src="checkinqr.jpeg" alt="Check-in QR Code" class="w-full h-auto rounded-lg">
-                <a href="https://checkin.si/green-street-hideaway" target="_blank" rel="noopener noreferrer" class="mt-4 flex items-center justify-center gap-2 w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-xl transition-colors">
-                    <i class="fas fa-external-link-alt"></i> Open Check-In Page
+        <div id="checkinModal" class="hidden fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4" onclick="if(event.target === this) this.classList.add('hidden')">
+            <div class="bg-white p-6 rounded-2xl max-w-sm w-full text-center relative">
+                <button onclick="document.getElementById('checkinModal').classList.add('hidden')" class="absolute top-2 right-4 text-gray-500 hover:text-gray-800 font-bold text-2xl">×</button>
+                
+                <h3 class="font-bold text-xl mb-1 text-gray-800">Guest Check-In</h3>
+                <p class="text-xs text-gray-500 mb-5">Please complete your registration.</p>
+                
+                <a href="https://checkin.si/green-street-hideaway" target="_blank" rel="noopener noreferrer" class="block w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-xl shadow-md transition-colors mb-5">
+                    <i class="fas fa-external-link-alt mr-2"></i> Tap Here to Check-In
                 </a>
-                <p class="text-xs text-gray-500 mt-3">Tap anywhere outside to close</p>
+
+                <div class="flex items-center justify-center space-x-3 mb-4 opacity-50">
+                    <hr class="w-1/4 border-gray-400">
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-gray-500">Or Scan QR</span>
+                    <hr class="w-1/4 border-gray-400">
+                </div>
+
+                <img src="checkinqr.jpeg" alt="Check-in QR Code" class="w-1/2 mx-auto h-auto rounded-lg shadow-sm border border-gray-100">
             </div>
         </div>
 
@@ -75,77 +79,108 @@
                 <i class="fas fa-key text-green-600 mr-2"></i> How to Enter
             </h2>
             
-            <p class="mb-2 italic text-sm"><i class="fas fa-parking mr-2"></i><strong>Step 1: Park & Walk</strong></p>
-            <img src="house.jpg" alt="Parking and path" class="w-full h-auto rounded-xl mb-2 shadow-sm">
-            <img src="path.jpeg" alt="Aerial map to entrance" class="w-full h-auto rounded-xl mb-2 shadow-sm border border-gray-200">
-            <p class="text-sm text-gray-600 mb-6 pb-4 border-b">Park in the dedicated space on your left. Walk 20m between the caravan and house to the entrance on your right.</p>
+            <p class="mb-2 italic text-sm font-semibold text-green-700"><i class="fas fa-parking mr-2"></i>Step 1: Park & Walk</p>
+            <img src="house.jpg" alt="Parking and path" class="w-full h-auto rounded-xl mb-4 shadow-sm border border-gray-100">
+            <p class="text-sm text-gray-600 mb-6 pb-6 border-b border-gray-100">Park in the dedicated space on your left. Walk 20m between the caravan and house to the entrance on your right.</p>
 
-            <p class="mb-2 italic text-sm"><i class="fas fa-door-open mr-2"></i><strong>Step 2: Unlock the Door</strong></p>
-            <img src="frontdoor.jpeg" alt="Front Door" class="w-full max-h-64 h-auto object-cover rounded-xl mb-4 shadow-sm">
-            <p class="text-xs text-gray-500 mb-2 font-medium uppercase tracking-wide">Select your language:</p>
-            <div class="flex flex-wrap gap-2 mb-3" id="langPicker">
-                <button onclick="setLang('GB')"  class="lang-btn active-lang flex items-center gap-1 px-2 py-1 rounded-lg border text-xs font-semibold bg-green-50 border-green-400 shadow-sm" data-lang="GB">🇬🇧 EN</button>
-                <button onclick="setLang('SLO')" class="lang-btn flex items-center gap-1 px-2 py-1 rounded-lg border text-xs font-semibold bg-gray-50 border-gray-200" data-lang="SLO">🇸🇮 SL</button>
-                <button onclick="setLang('GER')" class="lang-btn flex items-center gap-1 px-2 py-1 rounded-lg border text-xs font-semibold bg-gray-50 border-gray-200" data-lang="GER">🇩🇪 DE</button>
-                <button onclick="setLang('FR')"  class="lang-btn flex items-center gap-1 px-2 py-1 rounded-lg border text-xs font-semibold bg-gray-50 border-gray-200" data-lang="FR">🇫🇷 FR</button>
-                <button onclick="setLang('IT')"  class="lang-btn flex items-center gap-1 px-2 py-1 rounded-lg border text-xs font-semibold bg-gray-50 border-gray-200" data-lang="IT">🇮🇹 IT</button>
-                <button onclick="setLang('CRO')" class="lang-btn flex items-center gap-1 px-2 py-1 rounded-lg border text-xs font-semibold bg-gray-50 border-gray-200" data-lang="CRO">🇭🇷 HR</button>
-                <button onclick="setLang('SRB')" class="lang-btn flex items-center gap-1 px-2 py-1 rounded-lg border text-xs font-semibold bg-gray-50 border-gray-200" data-lang="SRB">🇷🇸 SR</button>
+            <p class="mb-2 italic text-sm font-semibold text-green-700"><i class="fas fa-door-open mr-2"></i>Step 2: Unlock the Door</p>
+            <img src="frontdoor.jpeg" alt="Front Door" class="w-full h-auto rounded-xl mb-6 shadow-sm border border-gray-100">
+            
+            <div class="mb-3">
+                <label for="langSelect" class="block text-xs font-bold text-gray-500 uppercase mb-1 px-1">Choose Instruction Language:</label>
+                <select id="langSelect" onchange="changeKeypadLang()" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-green-500 focus:outline-none transition-all">
+                    <option value="GB">🇬🇧 English</option>
+                    <option value="SLO">🇸🇮 Slovenščina</option>
+                    <option value="GER">🇩🇪 Deutsch</option>
+                    <option value="FR">🇫🇷 Français</option>
+                    <option value="IT">🇮🇹 Italiano</option>
+                    <option value="CRO">🇭🇷 Hrvatski</option>
+                    <option value="SRB">🇷🇸 Srpski</option>
+                </select>
             </div>
-            <img id="keypadImg" src="GSH_-_Front_door__GB_.jpg" alt="Keypad Instructions" class="w-full h-auto rounded-xl shadow-sm border border-gray-200 transition-opacity duration-300">
+
+            <div class="relative group">
+                <img id="keypadImg" src="GSH - Front door (GB).jpg" alt="Keypad Instructions" class="w-full h-auto rounded-xl shadow-md border border-gray-200 transition-opacity duration-300">
+            </div>
         </section>
 
         <section class="space-y-3">
-            <h2 class="text-xl font-bold px-2"><i class="fas fa-camera text-green-600 mr-2"></i>Local Sights</h2>
+            <h2 class="text-xl font-bold px-2 flex items-center"><i class="fas fa-camera text-green-600 mr-2"></i>Local Sights</h2>
             <div class="grid grid-cols-2 gap-2">
                 <img src="lake.jpeg" class="w-full h-32 object-cover rounded-xl shadow-sm" alt="Lake Vrbje">
                 <img src="cave.jpeg" class="w-full h-32 object-cover rounded-xl shadow-sm" alt="Pekel Cave">
-                <img src="sunflower.jpeg" class="w-full h-32 object-cover rounded-xl shadow-sm" alt="Sunflower close-up">
-                <img src="sunflowers.jpeg" class="w-full h-32 object-cover rounded-xl shadow-sm" alt="Sunflowers in Savinja Valley">
+                <img src="sunflowers.jpeg" class="col-span-2 w-full h-48 object-cover rounded-xl shadow-sm" alt="Sunflowers in Savinja Valley">
             </div>
             <p class="text-xs text-center text-gray-500 italic mt-2">Explore Lake Vrbje, Pekel Cave, and the beautiful surrounding nature.</p>
         </section>
 
         <section class="space-y-3 mt-6">
-            <h2 class="text-xl font-bold px-2">Local Recommendations</h2>
+            <h2 class="text-xl font-bold px-2 flex items-center">Local Recommendations</h2>
             
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden accordion-item">
                 <button onclick="toggleAccordion(this)" class="w-full p-4 text-left flex justify-between items-center font-semibold">
                     <span><i class="fas fa-utensils text-green-600 mr-2"></i>Where to Dine</span>
-                    <i class="fas fa-chevron-down text-gray-400"></i>
+                    <i class="fas fa-chevron-down text-gray-400 transition-transform"></i>
                 </button>
-                <div class="accordion-content px-4 pb-4 space-y-3 text-sm">
-                    <div class="border-b pb-2">
-                        <a href="https://gostilna-privosnik.si/" target="_blank" class="font-bold text-green-700">Gostilna Privošnik (1.6km)</a>
-                        <p class="text-gray-500 text-xs">Traditional Slovenian cuisine.</p>
+                <div class="accordion-content">
+                    <div class="px-4 pb-4 space-y-3 text-sm">
+                        <div class="border-b pb-2">
+                            <a href="https://gostilna-privosnik.si/" target="_blank" class="font-bold text-green-700">Gostilna Privošnik (1.6km)</a>
+                            <p class="text-gray-500 text-xs">Traditional Slovenian cuisine.</p>
+                        </div>
+                        <div class="border-b pb-2"><a href="https://www.nekropolis.si/" target="_blank" class="font-bold text-green-700">Gostilna Nekropolis (850m)</a></div>
+                        <div class="border-b pb-2"><a href="https://rimljan.si/" target="_blank" class="font-bold text-green-700">Gostilna Rimljan (950m)</a></div>
+                        <div class="border-b pb-2"><p class="font-bold">Picerija Salsa (900m)</p></div>
+                        <div class="border-b pb-2"><p class="font-bold">Slaščičarna Maximum (1km)</p></div>
+                        <div><p class="font-bold text-pink-600 italic">Sladoledni vrt (850m) — Great Ice Cream!</p></div>
                     </div>
-                    <div class="border-b pb-2"><a href="https://www.nekropolis.si/" target="_blank" class="font-bold text-green-700">Gostilna Nekropolis (850m)</a></div>
-                    <div class="border-b pb-2"><a href="https://rimljan.si/" target="_blank" class="font-bold text-green-700">Gostilna Rimljan (950m)</a></div>
-                    <div class="border-b pb-2"><p class="font-bold">Picerija Salsa (900m)</p></div>
-                    <div class="border-b pb-2"><p class="font-bold">Slaščičarna Maximum (1km)</p></div>
-                    <div><p class="font-bold text-pink-600 italic">Sladoledni vrt (850m) — Great Ice Cream!</p></div>
                 </div>
             </div>
 
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden accordion-item">
                 <button onclick="toggleAccordion(this)" class="w-full p-4 text-left flex justify-between items-center font-semibold">
                     <span><i class="fas fa-shopping-cart text-green-600 mr-2"></i>Where to Shop</span>
-                    <i class="fas fa-chevron-down text-gray-400"></i>
+                    <i class="fas fa-chevron-down text-gray-400 transition-transform"></i>
                 </button>
-                <div class="accordion-content px-4 pb-4 space-y-2 text-sm">
-                    <p><strong>Mercator:</strong> 550m (Šempeter)</p>
-                    <p><strong>Spar:</strong> 850m (Šempeter)</p>
-                    <p><strong>Lidl / Hofer:</strong> ~3.5km (Žalec)</p>
-                    <p><strong>Pekarna Fijavž:</strong> 850m (Šempeter)</p>
+                <div class="accordion-content">
+                    <div class="px-4 pb-4 space-y-2 text-sm">
+                        <p><strong>Mercator:</strong> 550m (Šempeter)</p>
+                        <p><strong>Spar:</strong> 850m (Šempeter)</p>
+                        <p><strong>Lidl / Hofer:</strong> ~3.5km (Žalec)</p>
+                        <p><strong>Pekarna Fijavž:</strong> 850m (Šempeter)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden accordion-item">
+                <button onclick="toggleAccordion(this)" class="w-full p-4 text-left flex justify-between items-center font-semibold">
+                    <span><i class="fas fa-map text-green-600 mr-2"></i>What to Do</span>
+                    <i class="fas fa-chevron-down text-gray-400 transition-transform"></i>
+                </button>
+                <div class="accordion-content">
+                    <div class="px-4 pb-4 space-y-4 text-sm text-gray-600">
+                        <div>
+                            <strong class="text-green-800 block mb-1">Hiking</strong>
+                            <p>Šempeter offers a variety of beautiful hiking trails that allow you to immerse yourself in nature, with routes perfect for both leisurely walkers and more adventurous hikers. From lush valleys to panoramic hilltop views, these trails showcase the best of Slovenia's natural beauty.</p>
+                        </div>
+                        <div>
+                            <strong class="text-green-800 block mb-1">Cycling</strong>
+                            <p>Šempeter is a cycling paradise, with routes that weave through charming villages, green valleys, and alongside sparkling rivers. Whether you're an experienced cyclist or prefer a more relaxed ride, the area offers something for everyone.</p>
+                        </div>
+                        <div>
+                            <strong class="text-green-800 block mb-1">A Culinary Journey</strong>
+                            <p>Šempeter offers a range of delightful restaurants that showcase authentic Slovenian flavors along with international favorites.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
 
         <section class="bg-gray-800 text-white p-6 rounded-2xl shadow-lg mt-6">
             <h2 class="text-lg font-bold mb-4 uppercase tracking-widest text-green-400 border-b border-gray-700 pb-2">House Rules</h2>
-            <ul class="text-sm space-y-4 opacity-90 list-none">
+            <ul class="text-sm space-y-4 opacity-90">
                 <li><i class="fas fa-volume-mute mr-3 text-green-400"></i><strong>Quiet Hours:</strong> 10 PM to 7 AM.</li>
-                <li><i class="fas fa-nosmoking mr-3 text-red-400"></i><strong>No Smoking Inside:</strong> Please use the gazebo area on the left side.</li>
+                <li><i class="fas fa-smoking-ban mr-3 text-red-400"></i><strong>No Smoking Inside:</strong> Please use the gazebo area on the left side.</li>
                 <li><i class="fas fa-recycle mr-3 text-green-400"></i><strong>Waste:</strong> Please separate waste in kitchen bins.</li>
                 <li><i class="fas fa-clock mr-3 text-green-400"></i><strong>Check-out:</strong> Strictly by 11:30 AM.</li>
             </ul>
@@ -154,50 +189,34 @@
     </main>
 
     <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex justify-around p-3 shadow-2xl z-40">
-        <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="flex flex-col items-center text-green-700">
+        <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="flex flex-col items-center text-gray-500 hover:text-green-700 w-1/2">
             <i class="fas fa-home text-xl"></i>
             <span class="text-[10px] mt-1 font-bold tracking-tighter">HOME</span>
         </button>
         <div class="h-8 w-px bg-gray-200"></div>
-        <a href="tel:112" class="flex flex-col items-center text-red-600">
-            <i class="fas fa-phone-alt text-xl"></i>
-            <span class="text-[10px] mt-1 font-bold tracking-tighter">EMERGENCY (112)</span>
+        <a href="https://wa.me/38631616002" class="flex flex-col items-center text-green-600 hover:text-green-800 w-1/2">
+            <i class="fab fa-whatsapp text-xl"></i>
+            <span class="text-[10px] mt-1 font-bold tracking-tighter">MESSAGE HOST</span>
         </a>
     </nav>
 
-    <div class="px-6 pb-28 text-center text-xs text-gray-400">
-        Police: 113 | Hospital Celje: 12.6 km
+    <div class="px-6 pb-28 text-center text-[10px] text-gray-400 uppercase tracking-widest">
+        Emergency: 112 | Police: 113 | Hospital Celje: 12.6 km
     </div>
 
     <script>
-        function setLang(lang) {
-            const img = document.getElementById('keypadImg');
-            img.style.opacity = '0';
-            setTimeout(() => {
-                img.src = 'GSH_-_Front_door__' + lang + '_.jpg';
-                img.style.opacity = '1';
-            }, 200);
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                const isActive = btn.dataset.lang === lang;
-                btn.classList.toggle('active-lang', isActive);
-                btn.classList.toggle('bg-green-50', isActive);
-                btn.classList.toggle('border-green-400', isActive);
-                btn.classList.toggle('shadow-sm', isActive);
-                btn.classList.toggle('bg-gray-50', !isActive);
-                btn.classList.toggle('border-gray-200', !isActive);
-            });
-        }
-
         function toggleAccordion(btn) {
             const item = btn.parentNode;
-            const isOpen = item.classList.contains('accordion-open');
-            document.querySelectorAll('.accordion-item').forEach(i => {
-                i.classList.remove('accordion-open');
-                i.querySelector('.fa-chevron-down').style.transform = 'rotate(0deg)';
-            });
-            if (!isOpen) {
-                item.classList.add('accordion-open');
-                btn.querySelector('.fa-chevron-down').style.transform = 'rotate(180deg)';
+            const icon = btn.querySelector('.fa-chevron-down');
+            
+            // Toggle the accordion open class
+            item.classList.toggle('accordion-open');
+            
+            // Rotate the chevron icon
+            if (item.classList.contains('accordion-open')) {
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                icon.style.transform = 'rotate(0deg)';
             }
         }
 
@@ -215,6 +234,14 @@
             } catch (err) {
                 console.error('Failed to copy!', err);
             }
+        }
+
+        function changeKeypadLang() {
+            const lang = document.getElementById('langSelect').value;
+            const img = document.getElementById('keypadImg');
+            img.style.opacity = '0.5';
+            img.src = `GSH - Front door (${lang}).jpg`;
+            setTimeout(() => { img.style.opacity = '1'; }, 50);
         }
     </script>
 </body>
