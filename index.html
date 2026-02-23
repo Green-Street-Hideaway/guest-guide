@@ -187,6 +187,8 @@
                 btn.classList.toggle('border-gray-200', !isActive);
             });
         }
+
+        function toggleAccordion(btn) {
             const item = btn.parentNode;
             const isOpen = item.classList.contains('accordion-open');
             document.querySelectorAll('.accordion-item').forEach(i => {
