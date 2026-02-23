@@ -30,18 +30,31 @@
                 <i class="fab fa-whatsapp text-green-500 text-xl mb-1"></i>
                 <span class="block text-xs font-semibold">Message</span>
             </a>
-            <button onclick="document.getElementById('qrModal').classList.remove('hidden')" class="bg-white p-3 rounded-xl shadow-sm border border-gray-100 text-center flex flex-col justify-center items-center">
-                <i class="fas fa-qrcode text-gray-700 text-xl mb-1"></i>
-                <span class="block text-xs font-semibold">Check-In</span>
+            <button onclick="document.getElementById('checkinModal').classList.remove('hidden')" class="bg-white p-3 rounded-xl shadow-sm border border-gray-100 text-center flex flex-col justify-center items-center relative overflow-hidden">
+                <div class="absolute inset-0 bg-green-50 opacity-50"></div>
+                <i class="fas fa-clipboard-check text-green-700 text-xl mb-1 relative z-10"></i>
+                <span class="block text-xs font-bold text-green-800 relative z-10">Check-In</span>
             </button>
         </section>
 
-        <div id="qrModal" class="hidden fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4" onclick="this.classList.add('hidden')">
+        <div id="checkinModal" class="hidden fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4" onclick="if(event.target === this) this.classList.add('hidden')">
             <div class="bg-white p-6 rounded-2xl max-w-sm w-full text-center relative">
-                <button class="absolute top-2 right-4 text-gray-500 font-bold text-xl">&times;</button>
-                <h3 class="font-bold text-lg mb-4">Scan to Check-In</h3>
-                <img src="checkinqr.jpeg" alt="Check-in QR Code" class="w-full h-auto rounded-lg">
-                <p class="text-xs text-gray-500 mt-4">Tap anywhere to close</p>
+                <button onclick="document.getElementById('checkinModal').classList.add('hidden')" class="absolute top-2 right-4 text-gray-500 hover:text-gray-800 font-bold text-2xl">×</button>
+                
+                <h3 class="font-bold text-xl mb-1 text-gray-800">Guest Check-In</h3>
+                <p class="text-xs text-gray-500 mb-5">Please complete your registration.</p>
+                
+                <a href="https://checkin.si/green-street-hideaway" target="_blank" rel="noopener noreferrer" class="block w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-xl shadow-md transition-colors mb-5">
+                    <i class="fas fa-external-link-alt mr-2"></i> Tap Here to Check-In
+                </a>
+
+                <div class="flex items-center justify-center space-x-3 mb-4 opacity-50">
+                    <hr class="w-1/4 border-gray-400">
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-gray-500">Or Scan QR</span>
+                    <hr class="w-1/4 border-gray-400">
+                </div>
+
+                <img src="checkinqr.jpeg" alt="Check-in QR Code" class="w-1/2 mx-auto h-auto rounded-lg shadow-sm border border-gray-100">
             </div>
         </div>
 
@@ -69,17 +82,33 @@
                 <i class="fas fa-key text-green-600 mr-2"></i> How to Enter
             </h2>
             
-            <p class="mb-2 italic text-sm"><i class="fas fa-parking mr-2"></i><strong>Step 1: Park & Walk</strong></p>
-            <img src="house.jpg" alt="Parking and path" class="w-full h-auto rounded-xl mb-2 shadow-sm">
-            <p class="text-sm text-gray-600 mb-6 pb-4 border-b">Park in the dedicated space on your left. Walk 20m between the caravan and house to the entrance on your right.</p>
+            <p class="mb-2 italic text-sm font-semibold text-green-700"><i class="fas fa-parking mr-2"></i>Step 1: Park & Walk</p>
+            <img src="house.jpg" alt="Parking and path" class="w-full h-auto rounded-xl mb-4 shadow-sm border border-gray-100">
+            <p class="text-sm text-gray-600 mb-6 pb-6 border-b border-gray-100">Park in the dedicated space on your left. Walk 20m between the caravan and house to the entrance on your right.</p>
 
-            <p class="mb-2 italic text-sm"><i class="fas fa-door-open mr-2"></i><strong>Step 2: Unlock the Door</strong></p>
-            <img src="frontdoor.jpeg" alt="Front Door" class="w-full h-48 object-cover rounded-xl mb-4 shadow-sm">
-            <img src="keypad.jpg" alt="Keypad Instructions" class="w-full h-auto rounded-xl shadow-sm border border-gray-200">
+            <p class="mb-2 italic text-sm font-semibold text-green-700"><i class="fas fa-door-open mr-2"></i>Step 2: Unlock the Door</p>
+            <img src="frontdoor.jpeg" alt="Front Door" class="w-full h-48 object-cover rounded-xl mb-6 shadow-sm">
+            
+            <div class="mb-3">
+                <label for="langSelect" class="block text-xs font-bold text-gray-500 uppercase mb-1 px-1">Choose Instruction Language:</label>
+                <select id="langSelect" onchange="changeKeypadLang()" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-green-500 focus:outline-none transition-all">
+                    <option value="GB">🇬🇧 English</option>
+                    <option value="SLO">🇸🇮 Slovenščina</option>
+                    <option value="GER">🇩🇪 Deutsch</option>
+                    <option value="FR">🇫🇷 Français</option>
+                    <option value="IT">🇮🇹 Italiano</option>
+                    <option value="CRO">🇭🇷 Hrvatski</option>
+                    <option value="SRB">RS Srpski</option>
+                </select>
+            </div>
+
+            <div class="relative group">
+                <img id="keypadImg" src="GSH - Front door (GB).jpg" alt="Keypad Instructions" class="w-full h-auto rounded-xl shadow-md border border-gray-200 transition-opacity duration-300">
+            </div>
         </section>
 
         <section class="space-y-3">
-            <h2 class="text-xl font-bold px-2"><i class="fas fa-camera text-green-600 mr-2"></i>Local Sights</h2>
+            <h2 class="text-xl font-bold px-2 flex items-center"><i class="fas fa-camera text-green-600 mr-2"></i>Local Sights</h2>
             <div class="grid grid-cols-2 gap-2">
                 <img src="lake.jpeg" class="w-full h-32 object-cover rounded-xl shadow-sm" alt="Lake Vrbje">
                 <img src="cave.jpeg" class="w-full h-32 object-cover rounded-xl shadow-sm" alt="Pekel Cave">
@@ -89,7 +118,7 @@
         </section>
 
         <section class="space-y-3 mt-6">
-            <h2 class="text-xl font-bold px-2">Local Recommendations</h2>
+            <h2 class="text-xl font-bold px-2 flex items-center">Local Recommendations</h2>
             
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden accordion-item">
                 <button onclick="toggleAccordion(this)" class="w-full p-4 text-left flex justify-between items-center font-semibold">
@@ -147,7 +176,7 @@
         </a>
     </nav>
 
-    <div class="px-6 pb-28 text-center text-xs text-gray-400">
+    <div class="px-6 pb-28 text-center text-[10px] text-gray-400 uppercase tracking-widest">
         Police: 113 | Hospital Celje: 12.6 km
     </div>
 
@@ -171,6 +200,17 @@
             } catch (err) {
                 console.error('Failed to copy!', err);
             }
+        }
+
+        function changeKeypadLang() {
+            const lang = document.getElementById('langSelect').value;
+            const img = document.getElementById('keypadImg');
+            // Fade out
+            img.style.opacity = '0.5';
+            // Change source based on selection
+            img.src = `GSH - Front door (${lang}).jpg`;
+            // Fade in
+            setTimeout(() => { img.style.opacity = '1'; }, 50);
         }
     </script>
 </body>
