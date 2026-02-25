@@ -257,12 +257,14 @@
         }
 
         function changeKeypadLang() {
-            const lang = document.getElementById('langSelect').value;
-            const img = document.getElementById('keypadImg');
-            img.style.opacity = '0.5';
-            img.src = `GSH - Front door (${lang}).jpg`;
-            setTimeout(() => { img.style.opacity = '1'; }, 50);
-        }
+    const lang = document.getElementById('langSelect').value;
+    const img = document.getElementById('keypadImg');
+    img.style.opacity = '0.5';
+    img.onload = function() {
+        img.style.opacity = '1';
+    };
+    img.src = `GSH - Front door (${lang}).jpg`;
+}
     </script>
 </body>
 </html>
