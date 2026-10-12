@@ -1,317 +1,615 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Green Street Hideaway - Digital Guide</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        /* Fixed Accordion CSS */
-        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.5s ease-in-out; }
-        .accordion-open .accordion-content { max-height: 2000px; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Green Street Hideaway – Guest Guide</title>
+  <meta name="description" content="Your digital guest guide for Green Street Hideaway: check-in, Wi-Fi, door instructions, local tips and house rules.">
+  <!-- Private guest information (Wi-Fi, door instructions): keep it out of search results. -->
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#18261F">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="image" type="image/webp" href="img/living-portrait-900.webp" media="(max-width: 700px) and (orientation: portrait)" fetchpriority="high">
+  <link rel="preload" as="image" type="image/webp" imagesrcset="img/living-960.webp 960w, img/living-1600.webp 1600w" imagesizes="100vw" media="not all and (max-width: 700px) and (orientation: portrait)" fetchpriority="high">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ═══ Design tokens — "Linen & Hop Green" (shared with the Welcome site) ═══ */
+    :root {
+      --linen:     #F4F2EC;
+      --paper:     #FBFAF7;
+      --line:      #DAD5C8;
+      --line-soft: #E7E3D9;
+      --hop:       #34503D;
+      --hop-dark:  #2A4232;
+      --pine:      #18261F;
+      --cone:      #D3DC9B;
+      --ink-soft:  #4C554E;
+      --ink-mute:  #5F675F;
+      --serif: 'Instrument Serif', 'Iowan Old Style', Georgia, serif;
+      --sans:  'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      --radius: 4px;
+      --ease: cubic-bezier(.2, .7, .2, 1);
+      --col: 640px;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 16px; -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0; background: var(--linen); color: var(--pine);
+      font-family: var(--sans); font-size: 16px; line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    img { display: block; max-width: 100%; height: auto; }
+    a { color: var(--hop); text-underline-offset: 3px; }
+    a:hover { color: var(--pine); }
+    h1, h2, h3, p, ul, ol, figure { margin: 0; }
+    ul, ol { padding: 0; list-style: none; }
+    button { font: inherit; color: inherit; }
+    :focus-visible { outline: 2px solid var(--hop); outline-offset: 3px; border-radius: 2px; }
+    .on-dark :focus-visible { outline-color: var(--cone); }
+    .visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+    .col { max-width: var(--col); margin: 0 auto; padding-inline: 20px; }
+    .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--hop); }
+    .on-dark .eyebrow { color: var(--cone); }
+    .title { font-family: var(--serif); font-weight: 400; font-size: clamp(34px, 8vw, 44px); line-height: 1.05; }
+    .title em { font-style: italic; }
+    .muted { color: var(--ink-soft); }
+
+    /* ─── Buttons ─── */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      min-height: 52px; padding: 0 26px; border-radius: 999px; border: 1px solid transparent;
+      font-weight: 600; font-size: 16px; line-height: 1; text-decoration: none; cursor: pointer; white-space: nowrap;
+      transition: background-color .25s var(--ease), color .25s var(--ease);
+    }
+    .btn-primary { background: var(--hop); color: var(--paper); }
+    .btn-primary:hover { background: var(--hop-dark); color: var(--paper); }
+    .btn-outline { border-color: var(--pine); color: var(--pine); background: transparent; }
+    .btn-outline:hover { background: var(--pine); color: var(--paper); }
+    .btn-block { width: 100%; }
+    .icon-btn {
+      display: inline-flex; align-items: center; justify-content: center; flex: none;
+      width: 48px; height: 48px; border-radius: 999px; border: 1px solid var(--line);
+      background: transparent; color: var(--pine); cursor: pointer;
+    }
+    .text-link { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-weight: 600; font-size: 15px; color: var(--hop); text-decoration: none; }
+    .text-link span { border-bottom: 1px solid currentColor; }
+    .text-link:hover { color: var(--pine); }
+
+    /* ═══ Hero ═══ */
+    .hero {
+      position: relative; isolation: isolate; overflow: hidden;
+      min-height: 480px; height: 68vh; height: 68svh; max-height: 720px;
+      background: var(--pine); color: var(--paper); display: flex; flex-direction: column;
+    }
+    .hero picture, .hero picture img { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .hero picture { z-index: -2; }
+    .hero picture img { object-fit: cover; object-position: 45% 50%; animation: heroIn 2.2s var(--ease) both; }
+    @keyframes heroIn { from { transform: scale(1.06); opacity: .6; } to { transform: none; opacity: 1; } }
+    .hero::after {
+      content: ''; position: absolute; inset: 0; z-index: -1;
+      background:
+        linear-gradient(180deg, rgba(24,38,31,.55) 0%, rgba(24,38,31,0) 22%),
+        linear-gradient(0deg, rgba(24,38,31,.92) 0%, rgba(24,38,31,.6) 42%, rgba(24,38,31,0) 70%);
+    }
+    .hero-top { padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; max-width: var(--col); width: 100%; margin: 0 auto; }
+    .brand { display: flex; flex-direction: column; line-height: 1; color: inherit; text-decoration: none; }
+    .brand-name { font-family: var(--serif); font-size: 26px; }
+    .brand-sub { margin-top: 4px; font-size: 10px; font-weight: 600; letter-spacing: .34em; text-transform: uppercase; color: var(--cone); }
+    .hero-tag {
+      font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+      padding: 8px 12px; border: 1px solid rgba(251,250,247,.45); border-radius: 999px;
+    }
+    .hero-copy { margin-top: auto; padding: 0 20px 34px; max-width: var(--col); width: 100%; margin-inline: auto; display: flex; flex-direction: column; gap: 14px; }
+    .hero-copy > * { animation: rise 1s var(--ease) both; }
+    .hero-copy > :nth-child(2) { animation-delay: .1s; }
+    .hero-copy > :nth-child(3) { animation-delay: .2s; }
+    @keyframes rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+    .hero .eyebrow { color: var(--cone); }
+    .hero h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(46px, 12vw, 68px); line-height: .98; letter-spacing: -.01em; }
+    .hero h1 em { font-style: italic; }
+    .hero p { font-size: 16px; color: rgba(251,250,247,.9); max-width: 440px; }
+
+    /* ─── Quick actions ─── */
+    .quick { margin-top: -1px; background: var(--paper); border-bottom: 1px solid var(--line-soft); }
+    .quick ul { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); max-width: var(--col); margin: 0 auto; }
+    .quick li + li { border-left: 1px solid var(--line-soft); }
+    .quick a, .quick button {
+      width: 100%; min-height: 88px; padding: 14px 6px; border: 0; background: transparent; cursor: pointer;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+      font-size: 13px; font-weight: 600; color: var(--pine); text-decoration: none; text-align: center; line-height: 1.2;
+      transition: background-color .2s var(--ease);
+    }
+    .quick a:hover, .quick button:hover { background: var(--linen); color: var(--pine); }
+    .quick svg { color: var(--hop); }
+    .quick .is-key { background: var(--hop); color: var(--paper); }
+    .quick .is-key svg { color: var(--cone); }
+    .quick .is-key:hover { background: var(--hop-dark); color: var(--paper); }
+
+    /* ─── Sections ─── */
+    main { padding-bottom: 120px; }
+    .section { padding-block: 56px 0; }
+    .section-head { display: flex; flex-direction: column; gap: 10px; margin-bottom: 22px; }
+    .card { background: var(--paper); border: 1px solid var(--line-soft); border-radius: var(--radius); padding: 22px; }
+
+    /* Wi-Fi */
+    .wifi { display: grid; gap: 10px; }
+    .field { display: flex; flex-direction: column; gap: 2px; padding: 14px 16px; border-radius: var(--radius); background: var(--linen); }
+    .field small { font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-mute); }
+    .field strong { font-size: 18px; font-weight: 700; letter-spacing: .01em; word-break: break-word; }
+    .copy {
+      width: 100%; text-align: left; cursor: pointer; border: 1px solid var(--hop);
+      background: var(--paper); flex-direction: row; justify-content: space-between; align-items: center;
+      transition: background-color .2s var(--ease);
+    }
+    .copy:hover { background: #F0F2E6; }
+    .copy .pw { display: flex; flex-direction: column; gap: 2px; }
+    .copy .pw strong { font-size: 22px; letter-spacing: .08em; color: var(--hop); font-variant-numeric: tabular-nums; }
+    .copy-state { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--hop); }
+
+    /* Steps */
+    .steps { display: flex; flex-direction: column; gap: 34px; }
+    .step { display: flex; flex-direction: column; gap: 14px; }
+    .step-head { display: flex; align-items: center; gap: 14px; }
+    .step-num {
+      display: inline-flex; align-items: center; justify-content: center; flex: none;
+      width: 40px; height: 40px; border-radius: 999px; background: var(--pine); color: var(--cone);
+      font-family: var(--serif); font-size: 22px;
+    }
+    .step h3 { font-size: 18px; font-weight: 700; line-height: 1.3; }
+    .step img { width: 100%; border-radius: var(--radius); background: var(--line-soft); }
+    .step .door { max-height: 460px; object-fit: cover; object-position: 50% 30%; }
+    .lang { display: flex; flex-wrap: wrap; gap: 8px; }
+    .lang button {
+      min-height: 44px; min-width: 52px; padding: 0 14px; border-radius: 999px; cursor: pointer;
+      border: 1px solid var(--line); background: var(--paper); font-size: 14px; font-weight: 600;
+      transition: background-color .2s var(--ease), color .2s var(--ease), border-color .2s var(--ease);
+    }
+    .lang button:hover { border-color: var(--pine); }
+    .lang button[aria-pressed="true"] { background: var(--pine); border-color: var(--pine); color: var(--paper); }
+    #keypadImg { transition: opacity .25s var(--ease); border: 1px solid var(--line-soft); }
+    .note {
+      display: flex; gap: 12px; padding: 14px 16px; border-radius: var(--radius); background: var(--paper);
+      border: 1px solid var(--line-soft); font-size: 14.5px; color: var(--ink-soft);
+    }
+    .note svg { flex: none; color: var(--hop); margin-top: 2px; }
+
+    /* Sights */
+    .sights { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .sights figure { position: relative; overflow: hidden; border-radius: var(--radius); background: var(--line-soft); }
+    .sights img { width: 100%; height: 100%; object-fit: cover; }
+    .sights .wide { grid-column: 1 / -1; height: 210px; }
+    .sights .tall { height: 180px; }
+    .sights figcaption {
+      position: absolute; left: 0; right: 0; bottom: 0; padding: 26px 12px 10px;
+      background: linear-gradient(0deg, rgba(24,38,31,.75), rgba(24,38,31,0));
+      color: var(--paper); font-family: var(--serif); font-size: 20px; line-height: 1.1;
+    }
+
+    /* Accordions */
+    .acc { border-top: 1px solid var(--line); }
+    .acc:last-child { border-bottom: 1px solid var(--line); }
+    .acc summary {
+      list-style: none; cursor: pointer; display: flex; align-items: center; gap: 14px;
+      min-height: 64px; padding: 14px 0; font-size: 17px; font-weight: 600;
+    }
+    .acc summary::-webkit-details-marker { display: none; }
+    .acc summary > svg:first-child { color: var(--hop); flex: none; }
+    .acc summary::after {
+      content: ''; margin-left: auto; flex: none; width: 14px; height: 14px;
+      background:
+        linear-gradient(currentColor, currentColor) center / 14px 1.5px no-repeat,
+        linear-gradient(currentColor, currentColor) center / 1.5px 14px no-repeat;
+      transition: transform .3s var(--ease);
+    }
+    .acc[open] summary::after { transform: rotate(45deg); }
+    .acc summary:hover { color: var(--hop); }
+    .acc-body { padding: 0 0 22px; font-size: 15px; color: var(--ink-soft); display: flex; flex-direction: column; gap: 14px; }
+    .acc-body strong { color: var(--pine); }
+    .places li { display: flex; flex-direction: column; gap: 2px; padding: 12px 0; border-top: 1px solid var(--line-soft); }
+    .places li:first-child { border-top: 0; padding-top: 0; }
+    .place-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+    .place-row a, .place-row span:first-child { font-weight: 700; color: var(--pine); text-decoration: none; font-size: 15.5px; }
+    .place-row a:hover { color: var(--hop); text-decoration: underline; }
+    .dist { flex: none; font-size: 13.5px; font-weight: 600; color: var(--hop); }
+    .places p { font-size: 14px; font-style: italic; color: var(--ink-mute); }
+    .facts li { display: flex; gap: 12px; padding: 6px 0; }
+    .facts svg { flex: none; margin-top: 3px; color: var(--hop); }
+
+    /* House rules */
+    .rules { background: var(--pine); color: var(--linen); border-radius: var(--radius); padding: 26px 22px; }
+    .rules .title { color: var(--paper); margin: 8px 0 18px; }
+    .rules li { display: flex; gap: 14px; padding: 13px 0; border-top: 1px solid rgba(244,242,236,.14); font-size: 15px; color: rgba(244,242,236,.82); }
+    .rules li strong { color: var(--paper); }
+    .rules svg { flex: none; color: var(--cone); margin-top: 2px; }
+
+    /* Help */
+    .help { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .help a {
+      display: flex; flex-direction: column; gap: 2px; padding: 16px 14px; border-radius: var(--radius);
+      background: var(--paper); border: 1px solid var(--line-soft); text-decoration: none; color: var(--pine);
+    }
+    .help a strong { font-family: var(--serif); font-size: 32px; font-weight: 400; line-height: 1; }
+    .help a span { font-size: 13px; color: var(--ink-mute); }
+    .help a:hover { border-color: var(--hop); color: var(--pine); }
+    .help-note { margin-top: 12px; font-size: 14px; color: var(--ink-mute); }
+
+    .foot { padding: 48px 20px 0; text-align: center; font-size: 13px; color: var(--ink-mute); }
+    .foot .brand { align-items: center; color: var(--pine); margin-bottom: 10px; }
+    .foot .brand-sub { color: var(--hop); }
+
+    /* ─── Floating bar ─── */
+    .bar {
+      position: fixed; left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); z-index: 40;
+      max-width: calc(var(--col) - 16px); margin: 0 auto;
+      display: flex; align-items: center; gap: 10px; padding: 8px 8px 8px 8px;
+      background: var(--paper); border-radius: 999px;
+      box-shadow: 0 10px 34px rgba(24,38,31,.22), 0 0 0 1px rgba(24,38,31,.06);
+    }
+    .bar-text { flex: 1 1 auto; min-width: 0; line-height: 1.2; }
+    .bar-text strong { display: block; font-size: 15px; }
+    .bar-text small { display: block; font-size: 12.5px; color: var(--ink-soft); }
+    .bar .btn { min-height: 48px; padding: 0 20px; font-size: 15px; }
+
+    /* ─── Check-in dialog ─── */
+    dialog {
+      width: min(400px, calc(100vw - 32px)); padding: 0; border: 0; border-radius: var(--radius);
+      background: var(--paper); color: var(--pine); box-shadow: 0 24px 60px rgba(0,0,0,.3);
+    }
+    dialog::backdrop { background: rgba(15,22,18,.78); }
+    .dlg { padding: 28px 24px 26px; display: flex; flex-direction: column; gap: 16px; text-align: center; position: relative; }
+    .dlg .icon-btn { position: absolute; top: 12px; right: 12px; }
+    .dlg .title { font-size: 36px; }
+    .or { display: flex; align-items: center; gap: 12px; font-size: 11px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-mute); }
+    .or::before, .or::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+    .dlg img { width: 200px; margin: 0 auto; border-radius: var(--radius); }
+
+    /* Reveal */
+    .js .reveal { opacity: 0; transform: translateY(22px); transition: opacity .9s var(--ease), transform .9s var(--ease); }
+    .js .reveal.visible { opacity: 1; transform: none; }
+
+    @media (min-width: 700px) {
+      .section { padding-top: 72px; }
+      .card, .rules { padding: 30px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+      .js .reveal { opacity: 1; transform: none; }
+    }
+  </style>
 </head>
+<body>
+<script>document.documentElement.classList.add('js');</script>
 
-<body id="top" class="bg-gray-50 text-gray-800 font-sans leading-relaxed">
+<header class="hero" id="top">
+  <picture>
+    <source media="(max-width: 700px) and (orientation: portrait)" srcset="img/living-portrait-900.webp" width="900" height="1452">
+    <img src="img/living-1600.webp" srcset="img/living-960.webp 960w, img/living-1600.webp 1600w" sizes="100vw"
+         width="1600" height="1068" alt="The open-plan living room at Green Street Hideaway" fetchpriority="high" decoding="async">
+  </picture>
+  <div class="hero-top">
+    <span class="brand"><span class="brand-name">Green Street</span><span class="brand-sub">Hideaway</span></span>
+    <span class="hero-tag">Guest guide</span>
+  </div>
+  <div class="hero-copy">
+    <p class="eyebrow">Welcome</p>
+    <h1>Make yourself <em>at home</em></h1>
+    <p>Check-in, Wi-Fi, getting in, local tips and house rules, all in one place.</p>
+  </div>
+</header>
 
-    <div class="max-w-md mx-auto">
-        <img src="banner-main.jpeg" alt="Green Street Hideaway Banner" class="w-full object-contain shadow-md">
+<nav class="quick" aria-label="Quick actions">
+  <ul>
+    <li>
+      <button type="button" class="is-key" id="openCheckin">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 3v2h6V3M9 12l2 2 4-4"/></svg>
+        Check-in
+      </button>
+    </li>
+    <li>
+      <a href="#wifi">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M2 9a15 15 0 0 1 20 0M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19" r="1"/></svg>
+        Wi-Fi
+      </a>
+    </li>
+    <li>
+      <a href="#enter">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3M15 8l2 2"/></svg>
+        Getting in
+      </a>
+    </li>
+    <li>
+      <a href="https://www.google.com/maps/search/?api=1&amp;query=46.254917,15.114056" target="_blank" rel="noopener noreferrer">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>
+        Maps
+      </a>
+    </li>
+  </ul>
+</nav>
+
+<main>
+
+  <!-- Wi-Fi -->
+  <section class="section col reveal" id="wifi" aria-labelledby="wifi-title">
+    <div class="section-head">
+      <p class="eyebrow">Stay connected</p>
+      <h2 class="title" id="wifi-title">Wi-Fi</h2>
+    </div>
+    <div class="card wifi">
+      <div class="field">
+        <small>Network</small>
+        <strong>Green Street Hideaway WiFi</strong>
+      </div>
+      <button type="button" class="field copy" id="copyWifi" aria-describedby="copyState">
+        <span class="pw">
+          <small>Password</small>
+          <strong id="wifiPass">75754907</strong>
+        </span>
+        <span class="copy-state" id="copyState" aria-live="polite">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>
+          <span>Tap to copy</span>
+        </span>
+      </button>
+    </div>
+  </section>
+
+  <!-- How to enter -->
+  <section class="section col reveal" id="enter" aria-labelledby="enter-title">
+    <div class="section-head">
+      <p class="eyebrow">Arrival</p>
+      <h2 class="title" id="enter-title">How to <em>get in</em></h2>
+    </div>
+    <ol class="steps">
+      <li class="step">
+        <div class="step-head"><span class="step-num" aria-hidden="true">1</span><h3>Park &amp; walk</h3></div>
+        <img src="img/house.webp" width="1400" height="778" alt="The courtyard with the reserved parking space on the left and the 20 m route along the left side of the house to the front door" loading="lazy" decoding="async">
+        <p class="muted">Park in the dedicated space on your left. Walk 20 m along the left side of the house to the entrance on your right.</p>
+      </li>
+      <li class="step">
+        <div class="step-head"><span class="step-num" aria-hidden="true">2</span><h3>Unlock the door</h3></div>
+        <img class="door" src="img/frontdoor.webp" width="900" height="1612" alt="The apartment’s white front door with the keypad beside it" loading="lazy" decoding="async">
+        <div>
+          <p class="eyebrow" id="langLabel" style="margin-bottom:10px">Instructions language</p>
+          <div class="lang" role="group" aria-labelledby="langLabel">
+            <button type="button" data-lang="GB" aria-pressed="true" lang="en">English</button>
+            <button type="button" data-lang="GER" aria-pressed="false" lang="de">Deutsch</button>
+            <button type="button" data-lang="IT" aria-pressed="false" lang="it">Italiano</button>
+            <button type="button" data-lang="FR" aria-pressed="false" lang="fr">Français</button>
+            <button type="button" data-lang="SLO" aria-pressed="false" lang="sl">Slovenščina</button>
+            <button type="button" data-lang="CRO" aria-pressed="false" lang="hr">Hrvatski</button>
+            <button type="button" data-lang="SRB" aria-pressed="false" lang="sr">Srpski</button>
+          </div>
+        </div>
+        <img id="keypadImg" src="img/door-GB.webp" width="1400" height="753" alt="Keypad instructions: press the bell icon at the bottom left, enter your four-digit code, then press the key icon at the bottom right. The door opens. When leaving, close the door and it locks automatically." decoding="async">
+        <p class="note">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v5h1"/></svg>
+          <span>Your personal four-digit code is sent to you on the day of arrival. Can’t find it? <a href="https://wa.me/38631616002">Message us on WhatsApp</a>.</span>
+        </p>
+      </li>
+    </ol>
+  </section>
+
+  <!-- Local sights -->
+  <section class="section col reveal" aria-labelledby="sights-title">
+    <div class="section-head">
+      <p class="eyebrow">Explore</p>
+      <h2 class="title" id="sights-title">Local <em>sights</em></h2>
+    </div>
+    <div class="sights">
+      <figure class="tall"><img src="img/lake.webp" width="488" height="361" alt="Lake Vrbje at sunset" loading="lazy" decoding="async"><figcaption>Lake Vrbje</figcaption></figure>
+      <figure class="tall"><img src="img/cave.webp" width="386" height="586" alt="Inside Pekel Cave" loading="lazy" decoding="async"><figcaption>Pekel Cave</figcaption></figure>
+      <figure class="wide"><img src="img/sunflowers.webp" width="415" height="555" alt="Sunflower fields in the Savinja Valley" loading="lazy" decoding="async"><figcaption>Savinja Valley fields</figcaption></figure>
+    </div>
+  </section>
+
+  <!-- Recommendations -->
+  <section class="section col reveal" aria-labelledby="recs-title">
+    <div class="section-head">
+      <p class="eyebrow">Our tips</p>
+      <h2 class="title" id="recs-title">Local <em>recommendations</em></h2>
     </div>
 
-    <div class="max-w-md mx-auto grid grid-cols-3 gap-1 bg-white shadow-sm border-b border-gray-200">
-        <img src="banner-blue.jpeg" alt="Experience 1" class="w-full aspect-square object-cover">
-        <img src="banner-green.jpeg" alt="Experience 2" class="w-full aspect-square object-cover">
-        <img src="banner-orange.jpeg" alt="Experience 3" class="w-full aspect-square object-cover">
-    </div>    
+    <details class="acc">
+      <summary>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3v8M5 3v5a2 2 0 0 0 4 0V3M7 11v10M17 21V3c-2 0-3.5 2.5-3.5 6S15 13 17 13"/></svg>
+        Where to dine
+      </summary>
+      <div class="acc-body">
+        <ul class="places">
+          <li><div class="place-row"><a href="https://gostilna-privosnik.si/" target="_blank" rel="noopener">Restaurant Privošnik</a><span class="dist">1.6 km</span></div><p>140 years of Slovenian soul, served on a plate.</p></li>
+          <li><div class="place-row"><a href="https://www.nekropolis.si/" target="_blank" rel="noopener">Restaurant Nekropolis</a><span class="dist">850 m</span></div><p>Ancient ruins next door, legendary burgers inside.</p></li>
+          <li><div class="place-row"><a href="https://rimljan.si/" target="_blank" rel="noopener">Restaurant Rimljan</a><span class="dist">950 m</span></div><p>Fresh every day, different every season.</p></li>
+          <li><div class="place-row"><a href="https://steakhousesalsa.si" target="_blank" rel="noopener">Steakhouse Salsa BBQ</a><span class="dist">900 m</span></div><p>A salsa of steaks, pizza, burgers, and fire — every visit a different dance.</p></li>
+          <li><div class="place-row"><a href="https://caffe-maximum.si" target="_blank" rel="noopener">Dessert Caffe Maximum</a><span class="dist">1 km</span></div><p>Maximum coffee. Maximum cake. Maximum happiness.</p></li>
+          <li><div class="place-row"><a href="https://www.sladolednivrt.si" target="_blank" rel="noopener">Sladoledni vrt</a><span class="dist">850 m</span></div><p>30+ flavors. Zero reasons to say no.</p></li>
+        </ul>
+      </div>
+    </details>
 
-    <main class="max-w-md mx-auto p-4 space-y-6 pb-24 mt-2">
-
-        <section class="grid grid-cols-2 gap-3">
-            <a href="https://www.google.com/maps/search/?api=1&query=46.254917,15.114056" target="_blank" rel="noopener noreferrer" class="bg-white p-3 rounded-xl shadow-sm border border-gray-100 text-center flex flex-col justify-center items-center">
-                <i class="fas fa-map-marker-alt text-green-600 text-xl mb-1"></i>
-                <span class="block text-xs font-semibold">Open Maps</span>
-            </a>
-            <button type="button" onclick="document.getElementById('checkinModal').classList.remove('hidden')" class="bg-white p-3 rounded-xl shadow-sm border border-gray-100 text-center flex flex-col justify-center items-center relative overflow-hidden">
-                <div class="absolute inset-0 bg-green-50 opacity-50"></div>
-                <i class="fas fa-clipboard-check text-green-700 text-xl mb-1 relative z-10"></i>
-                <span class="block text-xs font-bold text-green-800 relative z-10">Check-In</span>
-            </button>
-        </section>
-
-        <div id="checkinModal" class="hidden fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4" onclick="if(event.target === this) this.classList.add('hidden')">
-            <div class="bg-white p-6 rounded-2xl max-w-sm w-full text-center relative">
-                <button type="button" onclick="document.getElementById('checkinModal').classList.add('hidden')" class="absolute top-2 right-4 text-gray-500 hover:text-gray-800 font-bold text-2xl">×</button>
-                
-                <h3 class="font-bold text-xl mb-1 text-gray-800">Guest Check-In</h3>
-                <p class="text-xs text-gray-500 mb-5">Please complete your registration.</p>
-                
-                <a href="https://checkin.si/green-street-hideaway" target="_blank" rel="noopener noreferrer" class="block w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-xl shadow-md transition-colors mb-5">
-                    <i class="fas fa-external-link-alt mr-2"></i> Tap Here to Check-In
-                </a>
-
-                <div class="flex items-center justify-center space-x-3 mb-4 opacity-50">
-                    <hr class="w-1/4 border-gray-400">
-                    <span class="text-[10px] font-bold uppercase tracking-widest text-gray-500">Or Scan QR</span>
-                    <hr class="w-1/4 border-gray-400">
-                </div>
-
-                <img src="checkinqr.jpeg" alt="Check-in QR Code" class="w-1/2 mx-auto h-auto rounded-lg shadow-sm border border-gray-100">
-            </div>
+    <details class="acc">
+      <summary>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3zM9 3v15M15 6v15"/></svg>
+        What to do
+      </summary>
+      <div class="acc-body">
+        <div>
+          <strong>Local sights &amp; excursions</strong>
+          <p>From the mystical Hell Cave (Jama Pekel) to flower parks and medieval castles, the Savinja Valley is packed with hidden gems perfect for a morning trip or a full day out.</p>
+          <a class="text-link" href="https://druzinski-izleti.si/en/regions/savinja-statistical-region.html" target="_blank" rel="noopener noreferrer"><span>Explore day trip ideas</span></a>
         </div>
-
-        <section class="bg-white p-6 rounded-2xl shadow-sm border border-green-100">
-            <h2 class="text-xl font-bold mb-4 flex items-center">
-                <i class="fas fa-wifi text-green-600 mr-2"></i> WiFi Details
-            </h2>
-            <div class="space-y-3">
-                <div class="p-3 bg-gray-50 rounded-lg">
-                    <span class="text-xs text-gray-500 block">Network</span>
-                    <span class="font-mono font-bold">Green Street Hideaway WiFi</span>
-                </div>
-                <button type="button" onclick="copyWifi()" class="w-full flex justify-between items-center p-3 bg-green-50 hover:bg-green-100 rounded-lg transition-colors border border-green-200">
-                    <div class="text-left">
-                        <span class="text-xs text-gray-500 block">Password</span>
-                        <span id="wifiPass" class="font-mono font-bold text-green-800">75754907</span>
-                    </div>
-                    <i id="copyIcon" class="fas fa-copy text-green-600"></i>
-                </button>
-            </div>
-        </section>
-
-        <section class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-            <h2 class="text-xl font-bold mb-4 flex items-center">
-                <i class="fas fa-key text-green-600 mr-2"></i> How to Enter
-            </h2>
-            
-            <p class="mb-2 italic text-sm font-semibold text-green-700"><i class="fas fa-parking mr-2"></i>Step 1: Park & Walk</p>
-            <img src="house.jpg" alt="Parking and path" class="w-full h-auto rounded-xl mb-4 shadow-sm border border-gray-100">
-            <p class="text-sm text-gray-600 mb-6 pb-6 border-b border-gray-100">Park in the dedicated space on your left. Walk 20m on the left side of the house to the entrance on your right.</p>
-
-            <p class="mb-2 italic text-sm font-semibold text-green-700"><i class="fas fa-door-open mr-2"></i>Step 2: Unlock the Door</p>
-            <img src="frontdoor.jpeg" alt="Front Door" class="w-full h-auto rounded-xl mb-6 shadow-sm border border-gray-100">
-            
-            <div class="mb-3">
-                <label for="langSelect" class="block text-xs font-bold text-gray-500 uppercase mb-1 px-1">Choose Instruction Language:</label>
-                <select id="langSelect" onchange="changeKeypadLang()" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-green-500 focus:outline-none transition-all">
-                    <option value="GER">🇩🇪 Deutsch</option>
-                    <option value="GB" selected>🇬🇧 English</option>
-                    <option value="FR">🇫🇷 Français</option>
-                    <option value="CRO">🇭🇷 Hrvatski</option>
-                    <option value="IT">🇮🇹 Italiano</option>
-                    <option value="SLO">🇸🇮 Slovenščina</option>
-                    <option value="SRB">🇷🇸 Srpski</option>
-                </select>
-            </div>
-
-            <div class="relative group">
-                <img id="keypadImg" src="GSH - Front door (GB).jpg" alt="Keypad Instructions" class="w-full h-auto rounded-xl shadow-md border border-gray-200 transition-opacity duration-300">
-            </div>
-        </section>
-
-        <section class="space-y-3">
-            <h2 class="text-xl font-bold px-2 flex items-center"><i class="fas fa-camera text-green-600 mr-2"></i>Local Sights</h2>
-            <div class="grid grid-cols-2 gap-2">
-                <img src="lake.jpeg" class="w-full h-32 object-cover rounded-xl shadow-sm" alt="Lake Vrbje">
-                <img src="cave.jpeg" class="w-full h-32 object-cover rounded-xl shadow-sm" alt="Pekel Cave">
-                <img src="sunflowers.jpeg" class="col-span-2 w-full h-48 object-cover rounded-xl shadow-sm" alt="Sunflowers in Savinja Valley">
-            </div>
-            <p class="text-xs text-center text-gray-500 italic mt-2">Explore Lake Vrbje, Pekel Cave, and the beautiful surrounding nature.</p>
-        </section>
-
-        <section class="space-y-3 mt-6">
-            <h2 class="text-xl font-bold px-2 flex items-center">Local Recommendations</h2>
-            
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden accordion-item">
-                <button type="button" onclick="toggleAccordion(this)" class="w-full p-4 text-left flex justify-between items-center font-semibold">
-                    <span><i class="fas fa-utensils text-green-600 mr-2"></i>Where to Dine</span>
-                    <i class="fas fa-chevron-down text-gray-400 transition-transform"></i>
-                </button>
-                <div class="accordion-content">
-    <div class="px-4 pb-4 space-y-3 text-sm">
-        <div class="border-b pb-2">
-            <a href="https://gostilna-privosnik.si/" target="_blank" class="font-bold text-green-700">Restaurant Privošnik (1.6km)</a>
-            <p class="text-xs text-gray-400 italic mt-0.5">140 years of Slovenian soul, served on a plate.</p>
+        <div>
+          <strong>Explore on two wheels</strong>
+          <p>Šempeter is the heart of Slovenia's hop-growing region. Enjoy a flat, relaxing ride through the iconic "Green Gold" hop fields or follow the scenic Savinja River. For those seeking a challenge, the surrounding hills offer rewarding climbs and panoramic views.</p>
+          <a class="text-link" href="https://www.hopsnakolo.si/en/" target="_blank" rel="noopener noreferrer"><span>Hop on a bike: view routes &amp; maps</span></a>
         </div>
-        <div class="border-b pb-2">
-            <a href="https://www.nekropolis.si/" target="_blank" class="font-bold text-green-700">Restaurant Nekropolis (850m)</a>
-            <p class="text-xs text-gray-400 italic mt-0.5">Ancient ruins next door, legendary burgers inside.</p>
+        <div>
+          <strong>A culinary journey</strong>
+          <p>Šempeter offers a range of delightful restaurants that showcase authentic Slovenian flavors along with international favorites.</p>
         </div>
-        <div class="border-b pb-2">
-            <a href="https://rimljan.si/" target="_blank" class="font-bold text-green-700">Restaurant Rimljan (950m)</a>
-            <p class="text-xs text-gray-400 italic mt-0.5">Fresh every day, different every season.</p>
+      </div>
+    </details>
+
+    <details class="acc">
+      <summary>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.5 12h-11zM9 8V6a3 3 0 0 1 6 0v2"/></svg>
+        Where to shop
+      </summary>
+      <div class="acc-body">
+        <ul class="places">
+          <li><div class="place-row"><span>Mercator</span><span class="dist">550 m · Šempeter</span></div></li>
+          <li><div class="place-row"><span>Spar</span><span class="dist">850 m · Šempeter</span></div></li>
+          <li><div class="place-row"><span>Bakery Fijavž</span><span class="dist">850 m · Šempeter</span></div></li>
+          <li><div class="place-row"><span>Hofer</span><span class="dist">3.3 km · Žalec</span></div></li>
+          <li><div class="place-row"><span>Lidl</span><span class="dist">3.6 km · Žalec</span></div></li>
+          <li><div class="place-row"><span>Tuš</span><span class="dist">4.2 km · Žalec</span></div></li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="acc">
+      <summary>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3l-5 3 2 4 2-1v12h10V9l2 1 2-4-5-3a4 4 0 0 1-8 0z"/></svg>
+        Laundry
+      </summary>
+      <div class="acc-body">
+        <p>The apartment has no washing machine. For laundry, we recommend a self-service laundromat with washers and dryers nearby.</p>
+        <div>
+          <strong>Pralni Kotiček - Pralnica perila Žalec</strong>
+          <ul class="facts" style="margin-top:6px">
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/></svg><span>Arja vas 102, 3301 Petrovče (Arnovski gozd business zone)</span></li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 16l1.5-5h11l1.5 5M5 16v3M19 16v3M5 16h14"/><circle cx="8" cy="16" r="0.5"/><circle cx="16" cy="16" r="0.5"/></svg><span>6.8 km, about 10 min by car</span></li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>Open every day, 6:00 – 23:00</span></li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="7" rx="7" ry="3"/><path d="M5 7v5c0 1.7 3.1 3 7 3s7-1.3 7-3V7M5 12v5c0 1.7 3.1 3 7 3s7-1.3 7-3v-5"/></svg><span><strong>Cash only:</strong> buy tokens at the machine inside with banknotes or coins. Cards are not accepted.</span></li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg><a href="tel:+38669750499">069 750 499</a></li>
+          </ul>
         </div>
-        <div class="border-b pb-2">
-            <a href="https://steakhousesalsa.si" target="_blank" class="font-bold text-green-700">Steakhouse Salsa BBQ (900m)</a>
-            <p class="text-xs text-gray-400 italic mt-0.5">A salsa of steaks, pizza, burgers, and fire — every visit a different dance.</p>
-        </div>
-        <div class="border-b pb-2">
-            <a href="https://caffe-maximum.si" target="_blank" class="font-bold text-green-700">Dessert Caffe Maximum (1km)</a>
-            <p class="text-xs text-gray-400 italic mt-0.5">Maximum coffee. Maximum cake. Maximum happiness.</p>
-        </div>
-        <div class="border-b pb-2">
-            <a href="https://www.sladolednivrt.si" target="_blank" class="font-bold text-green-700">Sladoledni vrt (850m)</a>
-            <p class="text-xs text-gray-400 italic mt-0.5">30+ flavors. Zero reasons to say no.</p>
-        </div>
+        <a class="text-link" href="https://www.google.com/maps/search/?api=1&amp;query=46.2650091,15.1840608" target="_blank" rel="noopener noreferrer"><span>Get directions</span></a>
+      </div>
+    </details>
+  </section>
+
+  <!-- House rules -->
+  <section class="section col reveal" aria-labelledby="rules-title">
+    <div class="rules on-dark">
+      <p class="eyebrow">Please note</p>
+      <h2 class="title" id="rules-title">House <em>rules</em></h2>
+      <ul>
+        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 15a8 8 0 1 1-9-11 6 6 0 0 0 9 11z"/></svg><span><strong>Quiet hours:</strong> 10 PM to 7 AM.</span></li>
+        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg><span><strong>No smoking inside:</strong> Please use the outdoor area.</span></li>
+        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg><span><strong>Waste:</strong> Please separate waste in kitchen bins.</span></li>
+        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span><strong>Check-out:</strong> Strictly by 11:30 AM.</span></li>
+        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="8" r="3.5"/><path d="M3 20a7 7 0 0 1 12-4.9M15 18l2 2 4-4"/></svg><span><strong>Registered guests:</strong> Only booked guests allowed.</span></li>
+        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0M16 5a3 3 0 0 1 0 6M21 20a6 6 0 0 0-4-5.6"/></svg><span><strong>Visitors:</strong> Prior approval needed for day guests.</span></li>
+      </ul>
     </div>
+  </section>
+
+  <!-- Emergency -->
+  <section class="section col reveal" aria-labelledby="help-title">
+    <div class="section-head">
+      <p class="eyebrow">Just in case</p>
+      <h2 class="title" id="help-title">Emergency <em>numbers</em></h2>
+    </div>
+    <div class="help">
+      <a href="tel:112"><strong>112</strong><span>Emergency &amp; ambulance</span></a>
+      <a href="tel:113"><strong>113</strong><span>Police</span></a>
+      <a href="https://www.google.com/maps/search/?api=1&amp;query=Splo%C5%A1na+bolni%C5%A1nica+Celje" target="_blank" rel="noopener noreferrer"><strong>12.6<small style="font-size:16px"> km</small></strong><span>Hospital Celje</span></a>
+    </div>
+    <p class="help-note">For anything else about the apartment, message us any time.</p>
+  </section>
+
+  <footer class="foot">
+    <a href="#top" class="brand"><span class="brand-name">Green Street</span><span class="brand-sub">Hideaway</span></a>
+    <p>Zelena ulica 17, 3311 Šempeter v Savinjski Dolini</p>
+    <p>Enjoy your stay.</p>
+  </footer>
+</main>
+
+<!-- Floating help bar -->
+<div class="bar">
+  <a class="icon-btn" href="#top" aria-label="Back to top">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+  </a>
+  <div class="bar-text">
+    <strong>Need anything?</strong>
+  </div>
+  <a class="btn btn-primary" href="https://wa.me/38631616002">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8.5 8.5 0 0 1-12.6 7.4L3 21l1.6-5.2A8.5 8.5 0 1 1 21 12z"/></svg>
+    Message us
+  </a>
 </div>
-            </div>
 
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden accordion-item mt-4">
-                <button type="button" onclick="toggleAccordion(this)" class="w-full p-4 text-left flex justify-between items-center font-semibold">
-                    <span><i class="fas fa-map text-green-600 mr-2"></i>What to Do</span>
-                    <i class="fas fa-chevron-down text-gray-400 transition-transform"></i>
-                </button>
-                <div class="accordion-content">
-                    <div class="px-4 pb-4 space-y-4 text-sm text-gray-600">
-                        <div>
-                            <strong class="text-green-800 block mb-1">Local Sights & Excursions</strong>
-                            <p>From the mystical Hell Cave (Jama Pekel) to flower parks and medieval castles, the Savinja Valley is packed with hidden gems perfect for a morning trip or a full day out.</p>
-                            <p class="mt-2 text-green-700 font-medium">
-                            <i class="fas fa-info-circle text-xs mr-1"></i> 
-                            <a href="https://druzinski-izleti.si/en/regions/savinja-statistical-region.html" target="_blank" rel="noopener noreferrer" class="underline hover:text-green-900 transition-colors">
-                            Explore Day Trip Ideas
-                </a>
-                </p>
-                        </div>
-                        <div>
-    <strong class="text-green-800 block mb-1">Explore on Two Wheels</strong>
-    <p>Šempeter is the heart of Slovenia's hop-growing region. Enjoy a flat, relaxing ride through the iconic "Green Gold" hop fields or follow the scenic Savinja River. For those seeking a challenge, the surrounding hills offer rewarding climbs and panoramic views.</p>
-    <p class="mt-2 text-green-700 font-medium">
-        <i class="fas fa-bicycle text-xs mr-1"></i> 
-        <a href="https://www.hopsnakolo.si/en/" target="_blank" rel="noopener noreferrer" class="underline hover:text-green-900 transition-colors">
-            Hop on a Bike: View Routes & Maps
-        </a>
-    </p>
-</div>
-                        <div>
-                            <strong class="text-green-800 block mb-1">A Culinary Journey</strong>
-                            <p>Šempeter offers a range of delightful restaurants that showcase authentic Slovenian flavors along with international favorites.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            </div>
+<!-- Check-in dialog -->
+<dialog id="checkinDialog" aria-labelledby="checkin-title">
+  <div class="dlg">
+    <button type="button" class="icon-btn" id="closeCheckin" aria-label="Close">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <p class="eyebrow">Registration</p>
+    <h2 class="title" id="checkin-title">Guest <em>check-in</em></h2>
+    <p class="muted">Please complete your registration.</p>
+    <a class="btn btn-primary btn-block" href="https://checkin.si/green-street-hideaway" target="_blank" rel="noopener noreferrer">Tap here to check in</a>
+    <p class="or">or scan the QR code</p>
+    <img src="img/checkin-qr.webp" width="600" height="561" alt="QR code linking to the guest check-in form" loading="lazy" decoding="async">
+  </div>
+</dialog>
 
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden accordion-item mt-4">
-                <button type="button" onclick="toggleAccordion(this)" class="w-full p-4 text-left flex justify-between items-center font-semibold">
-                    <span><i class="fas fa-shopping-basket text-green-600 mr-2"></i>Where to Shop</span>
-                    <i class="fas fa-chevron-down text-gray-400 transition-transform"></i>
-                </button>
-                <div class="accordion-content">
-                    <div class="px-4 pb-4 space-y-3 text-sm text-gray-600">
-                        <ul class="space-y-2">
-                            <li><i class="fas fa-store text-green-500 mr-2"></i><strong>Mercator:</strong> 550m (Šempeter)</li>
-                            <li><i class="fas fa-store text-green-500 mr-2"></i><strong>Spar:</strong> 850m (Šempeter)</li>
-                            <li><i class="fas fa-bread-slice text-green-500 mr-2"></i><strong>Bakery Fijavž:</strong> 850m (Šempeter)</li>
-                            <li><i class="fas fa-shopping-cart text-green-500 mr-2"></i><strong>Lidl:</strong> 3.6km (Žalec)</li>
-                            <li><i class="fas fa-shopping-cart text-green-500 mr-2"></i><strong>Hofer:</strong> 3.3km (Žalec)</li>
-                            <li><i class="fas fa-shopping-cart text-green-500 mr-2"></i><strong>Tuš:</strong> 4.2km (Žalec)</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+<script>
+(function () {
+  'use strict';
 
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden accordion-item mt-4">
-                <button type="button" onclick="toggleAccordion(this)" class="w-full p-4 text-left flex justify-between items-center font-semibold">
-                    <span><i class="fas fa-tshirt text-green-600 mr-2"></i>Laundry</span>
-                    <i class="fas fa-chevron-down text-gray-400 transition-transform"></i>
-                </button>
-                <div class="accordion-content">
-                    <div class="px-4 pb-4 space-y-3 text-sm text-gray-600">
-                        <p>The apartment has no washing machine. For laundry, we recommend a self-service laundromat with washers and dryers nearby.</p>
-                        <div>
-                            <strong class="text-green-800 block mb-1">Pralni Kotiček - Pralnica perila Žalec</strong>
-                            <ul class="space-y-2">
-                                <li><i class="fas fa-map-marker-alt text-green-500 mr-2"></i>Arja vas 102, 3301 Petrovče (Arnovski gozd business zone)</li>
-                                <li><i class="fas fa-car text-green-500 mr-2"></i>6.8km, about 10 min by car</li>
-                                <li><i class="fas fa-clock text-green-500 mr-2"></i>Open every day, 6:00 – 23:00</li>
-                                <li><i class="fas fa-coins text-green-500 mr-2"></i><strong>Cash only:</strong> buy tokens at the machine inside with banknotes or coins. Cards are not accepted.</li>
-                                <li><i class="fas fa-phone text-green-500 mr-2"></i><a href="tel:+38669750499" class="text-green-700 underline">069 750 499</a></li>
-                            </ul>
-                        </div>
-                        <p class="text-green-700 font-medium">
-                            <i class="fas fa-directions text-xs mr-1"></i>
-                            <a href="https://www.google.com/maps/search/?api=1&query=46.2650091,15.1840608" target="_blank" rel="noopener noreferrer" class="underline hover:text-green-900 transition-colors">
-                                Get Directions
-                            </a>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
+  // ─── Check-in dialog ───
+  var dlg = document.getElementById('checkinDialog');
+  document.getElementById('openCheckin').addEventListener('click', function () {
+    if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
+  });
+  document.getElementById('closeCheckin').addEventListener('click', function () { dlg.close(); });
+  dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });
 
-        <section class="bg-gray-800 text-white p-6 rounded-2xl shadow-lg mt-6">
-            <h2 class="text-lg font-bold mb-4 uppercase tracking-widest text-green-400 border-b border-gray-700 pb-2">House Rules</h2>
-            <ul class="text-sm space-y-4 opacity-90">
-                <li><i class="fas fa-volume-mute mr-3 text-green-400"></i><strong>Quiet Hours:</strong> 10 PM to 7 AM.</li>
-                <li><i class="fas fa-smoking-ban mr-3 text-red-400"></i><strong>No Smoking Inside:</strong> Please use the outdoor area.</li>
-                <li><i class="fas fa-recycle mr-3 text-green-400"></i><strong>Waste:</strong> Please separate waste in kitchen bins.</li>
-                <li><i class="fas fa-clock mr-3 text-green-400"></i><strong>Check-out:</strong> Strictly by 11:30 AM.</li>
-                <li><i class="fas fa-user-check mr-3 text-green-400"></i><strong>Registered Guests:</strong> Only booked guests allowed.</li>
-                <li><i class="fas fa-user-friends mr-3 text-green-400"></i><strong>Visitors:</strong> Prior approval needed for day guests.</li>
-            </ul>
-        </section>
-
-    </main>
-
-    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex justify-around p-3 shadow-2xl z-40">
-        <button type="button" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="flex flex-col items-center text-gray-500 hover:text-green-700 w-1/2">
-            <i class="fas fa-home text-xl"></i>
-            <span class="text-[10px] mt-1 font-bold tracking-tighter">HOME</span>
-        </button>
-        <div class="h-8 w-px bg-gray-200"></div>
-        <a href="https://wa.me/38631616002" class="flex flex-col items-center text-green-600 hover:text-green-800 w-1/2">
-            <i class="fab fa-whatsapp text-xl"></i>
-            <span class="text-[10px] mt-1 font-bold tracking-tighter">MESSAGE HOST</span>
-        </a>
-    </nav>
-
-    <div class="px-6 pb-28 text-center text-[10px] text-gray-400 uppercase tracking-widest">
-        Emergency: 112 | Police: 113 | Hospital Celje: 12.6 km
-    </div>
-
-    <script>
-        function toggleAccordion(btn) {
-            const item = btn.parentNode;
-            const icon = btn.querySelector('.fa-chevron-down');
-            
-            // Toggle the accordion open class
-            item.classList.toggle('accordion-open');
-            
-            // Rotate the chevron icon
-            if (item.classList.contains('accordion-open')) {
-                icon.style.transform = 'rotate(180deg)';
-            } else {
-                icon.style.transform = 'rotate(0deg)';
-            }
-        }
-
-        async function copyWifi() {
-            const pass = document.getElementById('wifiPass').innerText;
-            const icon = document.getElementById('copyIcon');
-            try {
-                await navigator.clipboard.writeText(pass);
-                icon.classList.replace('fa-copy', 'fa-check');
-                icon.classList.add('text-green-500');
-                setTimeout(() => {
-                    icon.classList.replace('fa-check', 'fa-copy');
-                    icon.classList.remove('text-green-500');
-                }, 2000);
-            } catch (err) {
-                console.error('Failed to copy!', err);
-            }
-        }
-
-        function changeKeypadLang() {
-    const lang = document.getElementById('langSelect').value;
-    const img = document.getElementById('keypadImg');
-    img.style.opacity = '0.5';
-    img.onload = function() {
-        img.style.opacity = '1';
+  // ─── Copy Wi-Fi password ───
+  var copyBtn = document.getElementById('copyWifi');
+  var copyLabel = document.querySelector('#copyState span');
+  copyBtn.addEventListener('click', function () {
+    var pass = document.getElementById('wifiPass').textContent.trim();
+    var done = function () {
+      copyLabel.textContent = 'Copied';
+      setTimeout(function () { copyLabel.textContent = 'Tap to copy'; }, 2000);
     };
-    img.src = `GSH - Front door (${lang}).jpg`;
-}
-    </script>
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(pass).then(done, function () { copyLabel.textContent = 'Copy failed'; });
+    } else {
+      var t = document.createElement('textarea');
+      t.value = pass; document.body.appendChild(t); t.select();
+      try { document.execCommand('copy'); done(); } catch (e) { copyLabel.textContent = 'Copy failed'; }
+      document.body.removeChild(t);
+    }
+  });
+
+  // ─── Keypad instructions language ───
+  var img = document.getElementById('keypadImg');
+  var langButtons = document.querySelectorAll('.lang button');
+  langButtons.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      langButtons.forEach(function (b) { b.setAttribute('aria-pressed', String(b === btn)); });
+      img.style.opacity = '0.4';
+      img.onload = function () { img.style.opacity = '1'; };
+      img.src = 'img/door-' + btn.getAttribute('data-lang') + '.webp';
+    });
+  });
+
+  // ─── Scroll reveal ───
+  var reveals = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+    }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+    reveals.forEach(function (el) { io.observe(el); });
+  } else {
+    reveals.forEach(function (el) { el.classList.add('visible'); });
+  }
+})();
+</script>
 </body>
 </html>
